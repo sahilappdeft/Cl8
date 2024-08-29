@@ -50,22 +50,23 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # }
 # DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'cl8',
-#         'USER': 'postgres',
-#         'PASSWORD': '',  # Leave this empty
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ROOT_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cl8',
+        'USER': 'postgres',
+        'PASSWORD': 'Psdnj@Eecezc3233r',
+        'HOST': '13.202.134.230',
+        'PORT': '5432',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': ROOT_DIR / 'db.sqlite3',
+#     }
+# }
 
 # URLS
 # ------------------------------------------------------------------------------
