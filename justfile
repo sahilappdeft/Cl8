@@ -1,41 +1,37 @@
-# just files are like makefiles but a bit
-# more intuitive to use
-# https://github.com/casey/just
-
-
 @test *options:
-    pipenv run pytest {{options}}
+    . venv/bin/activate && pytest {{options}}
 
 @install:
     #!/usr/bin/env sh
     
-    pipenv install --dev 
+    python3 -m venv venv
+    . venv/bin/activate && pip install -r requirements.txt
     cd theme/static_src/ && npm install && cd ../..
-    pipenv run python manage.py migrate
-    pipenv run python manage.py collectstatic --no-input
+    . venv/bin/activate && ./manage.py migrate
+    . venv/bin/activate && ./manage.py collectstatic --no-input
 
-@ci:
-    pipenv run pytest
+@ci:    
+    . venv/bin/activate && pytest
 
 @fetch-files-from-s3:
-    pipenv run bash ./scripts/fetch_media_file_from_s3.sh
+    . venv/bin/activate && bash ./scripts/fetch_media_file_from_s3.sh
 
 @serve *options:
-    pipenv run python manage.py runserver {{options}}
+    . venv/bin/activate && ./manage.py runserver {{options}}
 
 @manage *options:
-    pipenv run python manage.py {{options}}
+    . venv/bin/activate && ./manage.py {{options}}
 
 @tailwind-dev:
-    pipenv run python manage.py tailwind start
+    . venv/bin/activate && ./manage.py tailwind start
 
 @tailwind-build:
-    pipenv run python manage.py tailwind build
+    . venv/bin/activate && ./manage.py tailwind build
 
 @run *options:
     # run gunicorn in production
-    pipenv run gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
-    # pipenv run gunicorn config.wsgi -b :9000 --timeout 300 {{options}}
+    . venv/bin/activate && gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
+    # . venv/bin/activate && gunicorn config.wsgi -b :9000 --timeout 300 {{options}}
 
 @docker-build:
     # create a docker image, tagged as cl8
