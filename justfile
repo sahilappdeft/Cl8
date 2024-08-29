@@ -1,37 +1,41 @@
+# just files are like makefiles but a bit
+# more intuitive to use
+# https://github.com/casey/just
+
+
 @test *options:
-    . venv/bin/activate && pytest {{options}}
+    pipenv run pytest {{options}}
 
 @install:
     #!/usr/bin/env sh
     
-    python3 -m venv venv
-    source venv/bin/activate && pip install -r requirements.txt
+    pipenv install --dev 
     cd theme/static_src/ && npm install && cd ../..
-    source venv/bin/activate && ./manage.py migrate
-    source venv/bin/activate && ./manage.py collectstatic --no-input
+    pipenv run python manage.py migrate
+    pipenv run python manage.py collectstatic --no-input
 
-@ci:    
-    source venv/bin/activate && pytest
+@ci:
+    pipenv run pytest
 
 @fetch-files-from-s3:
-    source venv/bin/activate && bash ./scripts/fetch_media_file_from_s3.sh
+    pipenv run bash ./scripts/fetch_media_file_from_s3.sh
 
 @serve *options:
-    source venv/bin/activate && ./manage.py runserver {{options}}
+    pipenv run python manage.py runserver {{options}}
 
 @manage *options:
-    source venv/bin/activate && ./manage.py {{options}}
+    pipenv run python manage.py {{options}}
 
 @tailwind-dev:
-    source venv/bin/activate && ./manage.py tailwind start
+    pipenv run python manage.py tailwind start
 
 @tailwind-build:
-    source venv/bin/activate && ./manage.py tailwind build
+    pipenv run pythonmanage.py tailwind build
 
 @run *options:
     # run gunicorn in production
-    source venv/bin/activate && gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
-    # . venv/bin/activate && gunicorn config.wsgi -b :9000 --timeout 300 {{options}}
+    pipenv run gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
+    # pipenv run gunicorn config.wsgi -b :9000 --timeout 300 {{options}}
 
 @docker-build:
     # create a docker image, tagged as cl8
