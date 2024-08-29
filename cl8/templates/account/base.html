@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+{% load account socialaccount %}
+{% block title %}
+  {% block head_title %}
+  {% endblock head_title %}
+{% endblock title %}
+{% block nav %}
+  {% include "account/_nav_logged_out.html" %}
+{% endblock nav %}

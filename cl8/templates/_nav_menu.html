@@ -1,0 +1,91 @@
+{% load static %}
+{% load account socialaccount %}
+<style>
+  .header-color-override {
+    {% if request.constellation.background_color %}
+    background-color: {{ request.constellation.background_color}};
+    {% else %}
+    background-color: #1A3844;
+    {% endif %}
+  }
+  {% if request.constellation.text_color %}
+    .header-color-override .site-name {
+      color: {{ request.constellation.text_color}};
+    }
+    .header-color-override .menu .nav-toggle  {
+      color: {{ request.constellation.text_color}};
+    }
+  {% endif %}
+  
+</style>
+<header class="header-color-override grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+  {% comment %}
+  empty div here and at the end gives us our mx-auto style spacing 
+  using css grid
+  {% endcomment %}
+  <div></div>
+  <div class="">
+    <div class="">
+      <div class="flex justify-between items-center">
+        <div class="justify-self-start justify-align-center">
+          <a class="btn btn-ghost normal-case text-xl max-w-xs" href="/">
+            {% if request.constellation.logo %}
+              <img src="{{ request.constellation.logo.url }}" />
+            {% else %}
+              <span class="site-name text-white ml-4">{{ request.site.name }}</span>
+            {% endif %}
+          </a>
+        </div>
+        <div class="justify-self-end">
+          <ul class="menu menu-horizontal px-1">
+            {% if request.user.is_authenticated %}
+              <li tabindex="0">
+                <a class="nav-toggle text-white">
+                  <span class="hidden lg:inline">
+                    {% if request.user.name %}
+                      Hi {{ request.user.name }}
+                    {% else %}
+                      Hi {{ request.user.username }}
+                    {% endif %}
+                  </span>
+                  <svg class="fill-current"
+                       xmlns="http://www.w3.org/2000/svg"
+                       width="20"
+                       height="20"
+                       viewBox="0 0 24 24">
+                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                  </svg>
+                </a>
+                <ul class="p-2 bg-base-100 border right-0 lg:left-0"
+                    style="z-index:99999">
+                  <li>
+                    <a href="{% url 'profile-detail' request.user.profile.short_id %}">Profile</a>
+                  </li>
+                  {% comment %} <li>
+                    <a>Settings</a>
+                  </li> {% endcomment %}
+                  {% if request.user.is_staff or request.user.is_admin %}
+                    <li>
+                      <a href="{% url 'admin:index' %}">Admin</a>
+                    </li>
+                    <li>
+                      <a href="{% url 'profile-create' %}">Add new user</a>
+                    </li>
+                  {% endif %}
+                  <li>
+                    <a href="{% url 'account_logout' %}">Log out</a>
+                  </li>
+                </ul>
+              </li>
+            {% else %}
+              <li>
+                <a>Login</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div></div>
+</header>
