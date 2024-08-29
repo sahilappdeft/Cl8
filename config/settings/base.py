@@ -400,6 +400,3 @@ AIRTABLE_BASE = env.str("DJANGO_AIRTABLE_BASE", default=None)
 AIRTABLE_TABLE = env.str("DJANGO_AIRTABLE_TABLE", default=None)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://cl8.vinnisoft.org']
