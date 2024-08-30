@@ -258,7 +258,7 @@ class Profile(models.Model):
     def send_invite_mail(self):
         context = self.get_context_for_emails()
         rendered_templates = self.generate_invite_mail()
-
+        print(":::::::::::::::::::::::::::::::::::::::::::")
         send_mail(
             f"Welcome to { context['site'].name }",
             rendered_templates["text"],
