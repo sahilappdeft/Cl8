@@ -4,37 +4,38 @@
 
 
 @test *options:
-    pipenv run pytest {{options}}
+    venv/Scripts/activate
 
 @install:
-    #!/usr/bin/env sh
-    
-    pipenv install --dev 
+    #!/usr/bin/env bash
+
+    python -m venv venv
+    venv\Scripts\pip install -r requirements.txt  
     cd theme/static_src/ && npm install && cd ../..
-    pipenv run python3 manage.py migrate
-    pipenv run python3 manage.py collectstatic --no-input
+    python manage.py migrate
+    python manage.py collectstatic --no-input
 
 @ci:
-    pipenv run pytest
+    pytest
 
 @fetch-files-from-s3:
-    pipenv run bash ./scripts/fetch_media_file_from_s3.sh
+    bash ./scripts/fetch_media_file_from_s3.sh
 
 @serve *options:
-    pipenv run python3 manage.py runserver {{options}}
+    python manage.py runserver {{options}}
 
 @manage *options:
-    pipenv run python3 manage.py {{options}}
+    python manage.py {{options}}
 
 @tailwind-dev:
-    pipenv run python3 manage.py tailwind start
+    python manage.py tailwind start
 
 @tailwind-build:
-    pipenv run python3 manage.py tailwind build
+    python manage.py tailwind build
 
 @run *options:
     # run gunicorn in production
-    pipenv run gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
+    gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
     # pipenv run gunicorn config.wsgi -b :9000 --timeout 300 {{options}}
 
 @docker-build:

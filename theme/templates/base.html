@@ -8,6 +8,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         {% tailwind_css %}
     </head>
+    <link rel="stylesheet" href="{% static 'css/template.css' %}">
     {% if request.constellation.favicon %}
         <link rel="shortcut icon"
               type="image/png"
@@ -58,5 +59,6 @@
             </footer>
             {% block scripts %}
             {% endblock scripts %}
+            <script src="{% static 'js/template.js' %}"></script>
         </body>
     </html>

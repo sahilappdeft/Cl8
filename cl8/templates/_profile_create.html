@@ -22,7 +22,7 @@ div >input[type='file'] {
 
 
 </style>
-<div class="card-body">
+<div class="card-body p-0">
     <form enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -31,111 +31,121 @@ div >input[type='file'] {
             </div>
         {% endif %}
         <div class="grid lg:grid-cols-3">
-            <div class="">
+            <div class="sidebar text-center p-3 transition-all border  lg:inline  ">
                 {% comment %} {{ form.photo }} {% endcomment %}
-                <p class="text-sm my-4">{{ form.photo }}</p>
+                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4">Choose file</button>
+                <button class="btn w-48 profile-invisible-btn rounded-full mb-2">Profile invisible</button>
+                <!-- <p class="text-sm my-4">{{ form.photo }}</p>
                 <p class="my-4 w-2/3 p-2 rounded-md {% if form.instance.visible %} bg-red-400 {% else %} bg-green-300 {% endif %}">
                     {% render_field form.visible class="checkbox" %}
                     <label class="label inline mr-4 text-gray-700"
                            for="{{ form.visible.id_for_label }}">{{ form.visible.label }}</label>
-                </p>
-                <p class="text-xs w-2/3 px-3">When 'visible' is checked, your profile will show up in searches</p>
+                </p> -->
+                <p class="text-sm  px-3 m-auto">When 'visible' is checked, your profile will show up in searches</p>
             </div>
-            <div class=" col-span-2 prose">
-                <div class="form-control w-full max-w-xs">
-                    <label class="label" for="{{ form.name.id_for_label }}">
+            <div class=" col-span-2  p-4 transition-all border  lg:inline">
+                <div class="flex justify-between mb-4">
+                    <button class="mt-3 btn primary-btn rounded-full">Save changes</button>
+                    <a class="mt-3 btn secondary-btn rounded-full" href="{% url 'home' %}">Cancel</a>
+                </div>
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.name.id_for_label }}">
                         <span class="label-text">{{ form.name.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.name.errors }}</span>
                     <input type="text"
-                           placeholder="Type here"
+                           placeholder="Name"
                            name="{{ form.name.html_name }}"
                            value="{{ form.name.value|default_if_none:'' }}"
-                           class="input input-bordered w-full max-w-xs" />
+                           class="input input-bordered w-full empty-field myInput" />
                 </div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label" for="{{ form.email.id_for_label }}">
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.email.id_for_label }}">
                         <span class="label-text">{{ form.email.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.email.errors }}</span>
                     <input type="text"
-                           placeholder="Type here"
+                           placeholder="E-mail (work or personal) [never displayed to others]"
                            name="{{ form.email.html_name }}"
                            value="{{ form.email.value|default_if_none:'' }}"
-                           class="input input-bordered w-full max-w-xs" />
+                           class="input input-bordered w-full empty-field myInput" />
                 </div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label" for="{{ form.organisation.id_for_label }}">
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.organisation.id_for_label }}">
                         <span class="label-text">{{ form.organisation.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.organisation.errors }}</span>
                     <input type="text"
-                           placeholder="Type here"
+                           placeholder="Organisation(s)"
                            name="{{ form.organisation.html_name }}"
                            value="{{ form.organisation.value|default_if_none:'' }}"
-                           class="input input-bordered w-full max-w-xs" />
+                           class="input input-bordered w-full empty-field myInput" />
                 </div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label" for="{{ form.location.id_for_label }}">
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.location.id_for_label }}">
                         <span class="label-text">{{ form.location.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.location.errors }}</span>
                     <input type="text"
-                           placeholder="Type here"
+                           placeholder="Location(s)"
                            name="{{ form.location.html_name }}"
                            value="{{ form.location.value|default_if_none:'' }}"
-                           class="input input-bordered w-full max-w-xs" />
+                           class="input input-bordered w-full empty-field myInput" />
                 </div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label" for="{{ form.linkedin.id_for_label }}">
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.linkedin.id_for_label }}">
                         <span class="label-text">{{ form.linkedin.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.linkedin.errors }}</span>
                     <input type="text"
-                           placeholder="Type here"
+                           placeholder="LinkedIn"
                            name="{{ form.linkedin.html_name }}"
                            value="{{ form.linkedin.value|default_if_none:'' }}"
-                           class="input input-bordered w-full max-w-xs" />
+                           class="input input-bordered w-full empty-field myInput" />
                 </div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label" for="{{ form.twitter.id_for_label }}">
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.twitter.id_for_label }}">
                         <span class="label-text">{{ form.twitter.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.twitter.errors }}</span>
                     <input type="text"
-                           placeholder="Type here"
+                           placeholder="Twitter"
                            name="{{ form.twitter.html_name }}"
                            value="{{ form.twitter.value|default_if_none:'' }}"
-                           class="input input-bordered w-full max-w-xs" />
+                           class="input input-bordered w-full empty-field myInput" />
                 </div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label" for="{{ form.facebook.id_for_label }}">
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.facebook.id_for_label }}">
                         <span class="label-text">{{ form.facebook.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.facebook.errors }}</span>
                     <input type="text"
-                           placeholder="Type here"
+                           placeholder="Facebook"
                            name="{{ form.facebook.html_name }}"
                            value="{{ form.facebook.value|default_if_none:'' }}"
-                           class="input input-bordered w-full max-w-xs" />
+                           class="input input-bordered w-full empty-field myInput" />
                 </div>
-                <div class="form-control">
-                    <label class="label">
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label">
                         <span class="label-text">{{ form.bio.label }}</span>
-                    </label>
+                    </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.bio.errors }}</span>
-                    {% render_field form.bio class="textarea textarea-bordered w-full" placeholder="Type here" rows="5" cols="40" %}
+                    {% render_field form.bio class="textarea textarea-bordered w-full" placeholder="Bio" rows="5" cols="40" %}
                 </div>
-                <div class="form-control w-full">
+                <div class="form-control mb-4 w-full">
                     <label class="label">
                         <span class="label-text">{{ form.tags.label }}</span>
                     </label>
                     {% render_field form.tags class="w-full mt-4" %}
                 </div>
+                <div class="flex justify-between mt-4">
+                    <button class="mt-3 btn primary-btn rounded-full">Save changes</button>
+                    <a class="mt-3 btn secondary-btn rounded-full" href="{% url 'home' %}">Cancel</a>
+                </div>
             </div>
         </div>
-        <button class="mt-3 btn btn-primary">Save changes</button>
-        <a class="mt-3 btn btn-secondary" href="{% url 'home' %}">Back</a>
+        <!-- <button class="mt-3 btn btn-primary">Save changes</button>
+        <a class="mt-3 btn btn-secondary" href="{% url 'home' %}">Back</a> -->
     </form>
 </div>
 <script type="text/javascript"

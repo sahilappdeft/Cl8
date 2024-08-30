@@ -53,8 +53,8 @@
           We only want to hide the list of profiles when there is NO filtered search
           and when a user is not selected.
         {% endcomment %}
-        <div class="sidebar transition-all border {% if hide_profile_list %}hidden{% endif %} lg:inline"
-             style="max-height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
+        <div class="sidebar p-3 transition-all border {% if hide_profile_list %}hidden{% endif %} lg:inline"
+             style="height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
         <div id="profile-slot"
              class="card bg-base-100 lg:col-span-2 border rounded-none {% if not hide_profile_list %}hidden{% endif %} lg:inline">
           {% if profile %}

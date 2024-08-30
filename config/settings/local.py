@@ -81,8 +81,8 @@ INSTALLED_APPS += [
 
 MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 
-# NPM_BIN_PATH = "C:\\Program Files\\nodejs\\npm.cmd"
-NPM_BIN_PATH = "/usr/bin/npm"
+NPM_BIN_PATH = "C:\\Program Files\\nodejs\\npm.cmd"
+# NPM_BIN_PATH = "/usr/bin/npm"
 
 # django-extensions
 # ------------------------------------------------------------------------------
