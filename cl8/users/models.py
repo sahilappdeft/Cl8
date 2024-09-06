@@ -1,3 +1,6 @@
+import re
+from urllib.parse import urlparse
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
@@ -97,9 +100,9 @@ class Profile(models.Model):
     organisation = models.CharField(
         _("organisation"), max_length=254, blank=True, null=True
     )
-    twitter = models.CharField(_("twitter"), max_length=254, blank=True, null=True)
-    facebook = models.CharField(_("facebook"), max_length=254, blank=True, null=True)
-    linkedin = models.CharField(_("linkedin"), max_length=254, blank=True, null=True)
+    social_1 = models.CharField(_("social_1"), max_length=254, blank=True, null=True)
+    social_2 = models.CharField(_("social_2"), max_length=254, blank=True, null=True)
+    social_3 = models.CharField(_("social_3"), max_length=254, blank=True, null=True)
     bio = models.TextField(_("bio"), blank=True, null=True)
     visible = models.BooleanField(_("visible"), default=False)
     location = models.CharField(_("location"), max_length=254, blank=True, null=True)
@@ -176,6 +179,57 @@ class Profile(models.Model):
             return self._photo_detail_url
 
         return get_thumbnail(self.photo, "250x250", crop="center", quality=99).url
+    
+    @property
+    def social_1_name(self):
+        """
+        Extracts and returns the human-readable name of the website from the URL.
+        For example, 'https://www.example.com/path?query=1' will return 'example'.
+        """
+        # Parse the URL to get the netloc (network location part)
+        parsed_url = urlparse(self.social_1)
+        domain = parsed_url.netloc
+
+        # Remove the 'www.' prefix if present
+        domain = domain.replace('www.', '')
+
+        # Extract the base domain without subdomains and TLD
+        match = re.match(r'^([^\.]+)\.', domain)
+        return match.group(1) if match else domain
+    
+    @property
+    def social_2_name(self):
+        """
+        Extracts and returns the human-readable name of the website from the URL.
+        For example, 'https://www.example.com/path?query=1' will return 'example'.
+        """
+        # Parse the URL to get the netloc (network location part)
+        parsed_url = urlparse(self.social_2)
+        domain = parsed_url.netloc
+
+        # Remove the 'www.' prefix if present
+        domain = domain.replace('www.', '')
+
+        # Extract the base domain without subdomains and TLD
+        match = re.match(r'^([^\.]+)\.', domain)
+        return match.group(1) if match else domain
+    
+    @property
+    def social_3_name(self):
+        """
+        Extracts and returns the human-readable name of the website from the URL.
+        For example, 'https://www.example.com/path?query=1' will return 'example'.
+        """
+        # Parse the URL to get the netloc (network location part)
+        parsed_url = urlparse(self.social_3)
+        domain = parsed_url.netloc
+
+        # Remove the 'www.' prefix if present
+        domain = domain.replace('www.', '')
+
+        # Extract the base domain without subdomains and TLD
+        match = re.match(r'^([^\.]+)\.', domain)
+        return match.group(1) if match else domain
 
     def tags_by_grouping(self):
         """

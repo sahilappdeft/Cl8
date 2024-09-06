@@ -32,10 +32,24 @@
         {% endif %}
         <div class="grid lg:grid-cols-3">
             <div class="sidebar text-center p-3 transition-all border border-white lg:inline  ">
+                {% if form.instance.photo %}
+                <img id="photoPreview" class="w-48 h-48 m-auto block rounded-full object-cover" src="{{ form.instance.photo.url }}" />
+                {% else %}
+                <img id="photoPreview" class="w-48 h-48 m-auto block rounded-full object-cover"
+                    src="{% static 'img/placeholder-person-square.png' %}" />
+                {% endif %}
                 {% comment %} {{ form.photo }} {% endcomment %}
-                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4" id="btnImportData">Choose file</button>
-                <button class="btn w-48 profile-invisible-btn rounded-full mb-2">Profile invisible</button>
-                <!-- <p class="text-sm my-4">{{ form.photo }}</p>
+
+                <!-- Hidden file input for image upload -->
+                <input type="file" id="imageInput" name="photo" style="display: none;" accept="image/*">
+                
+                <!-- Hidden input to store the true/false value -->
+                <input type="hidden" id="visibilityStatus" name="visible" value="false">
+
+                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4" id="btnImportData" type="button" >Choose file</button>
+                <button class="btn w-48 profile-invisible-btn rounded-full mb-2" type="button" id="visibilityToggleBtn">
+                    Profile invisible
+                </button>                <!-- <p class="text-sm my-4">{{ form.photo }}</p>
                 <p class="my-4 w-2/3 p-2 rounded-md {% if form.instance.visible %} bg-red-400 {% else %} bg-green-300 {% endif %}">
                     {% render_field form.visible class="checkbox" %}
                     <label class="label inline mr-4 text-gray-700"
@@ -66,6 +80,17 @@
                         name="{{ form.email.html_name }}" value="{{ form.email.value|default_if_none:'' }}"
                         class="input input-bordered w-full empty-field myInput" />
                 </div>
+                
+                <div class="form-control w-full mb-4">
+                    <!-- <label class="label" for="{{ form.email.id_for_label }}">
+                        <span class="label-text">{{ form.email.label }}</span>
+                    </label> -->
+                    <span class="label-text text-red-500 px-1">{{ form.website.errors }}</span>
+                    <input type="text" placeholder="Website"
+                        name="{{ form.website.html_name }}" value="{{ form.website.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
+                </div>
+
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.organisation.id_for_label }}">
                         <span class="label-text">{{ form.organisation.label }}</span>
@@ -88,27 +113,27 @@
                     <!-- <label class="label" for="{{ form.linkedin.id_for_label }}">
                         <span class="label-text">{{ form.linkedin.label }}</span>
                     </label> -->
-                    <span class="label-text text-red-500 px-1">{{ form.linkedin.errors }}</span>
-                    <input type="text" placeholder="LinkedIn" name="{{ form.linkedin.html_name }}"
-                        value="{{ form.linkedin.value|default_if_none:'' }}"
+                    <span class="label-text text-red-500 px-1">{{ form.social_1.errors }}</span>
+                    <input type="text" placeholder="Social1" name="{{ form.social_1.html_name }}"
+                        value="{{ form.social_1.value|default_if_none:'' }}"
                         class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.twitter.id_for_label }}">
                         <span class="label-text">{{ form.twitter.label }}</span>
                     </label> -->
-                    <span class="label-text text-red-500 px-1">{{ form.twitter.errors }}</span>
-                    <input type="text" placeholder="Twitter" name="{{ form.twitter.html_name }}"
-                        value="{{ form.twitter.value|default_if_none:'' }}"
+                    <span class="label-text text-red-500 px-1">{{ form.social_2.errors }}</span>
+                    <input type="text" placeholder="Social2" name="{{ form.social_2.html_name }}"
+                        value="{{ form.social_2.value|default_if_none:'' }}"
                         class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.facebook.id_for_label }}">
                         <span class="label-text">{{ form.facebook.label }}</span>
                     </label> -->
-                    <span class="label-text text-red-500 px-1">{{ form.facebook.errors }}</span>
-                    <input type="text" placeholder="Facebook" name="{{ form.facebook.html_name }}"
-                        value="{{ form.facebook.value|default_if_none:'' }}"
+                    <span class="label-text text-red-500 px-1">{{ form.social_3.errors }}</span>
+                    <input type="text" placeholder="Social3" name="{{ form.social_3.html_name }}"
+                        value="{{ form.social_3.value|default_if_none:'' }}"
                         class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
@@ -136,15 +161,39 @@
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 <script>
-    $("#btnImportData").on("click", function (e) {
-        var fileDialog = $('<input type="file">');
-        fileDialog.click();
-        fileDialog.on("change", onFileSelected);
-        return false;
+    // Trigger file selection when "Choose file" button is clicked
+    $("#btnImportData").on("click", function () {
+        $("#imageInput").click(); // Trigger the hidden file input
     });
 
-    var onFileSelected = function (e) {
-        console.log($(this)[0].files);
-    };
+    // Show selected file name or preview the image
+    $("#imageInput").on("change", function () {
+        const file = this.files[0];
+        if (file) {
+            // Update image preview (Optional)
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#photoPreview').attr('src', e.target.result);  // Update image src with the uploaded image
+            }
+            reader.readAsDataURL(file);  // Read the uploaded image file
+        }
+    });
 </script>
+<script>
+    $("#visibilityToggleBtn").on("click", function() {
+        // Toggle the button's active/inactive state
+        $(this).toggleClass("profile-invisible-btn profile-visible-btn");
+        
+        // Change the button text based on its state
+        if ($(this).hasClass("profile-visible-btn")) {
+            $(this).text("Profile visible");
+            // Set hidden input value to true when active
+            $("#visibilityStatus").val("true");
+        } else {
+            $(this).text("Profile invisible");
+            // Set hidden input value to false when inactive
+            $("#visibilityStatus").val("false");
+        }
+    });
+    </script>
 {{ form.media }}

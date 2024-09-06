@@ -31,7 +31,7 @@
         <div class="justify-self-start justify-align-center">
           <a class="btn btn-ghost normal-case text-xl max-w-xs" href="/">
             {% if request.constellation.logo %}
-              <img src="{{ request.constellation.logo.url }}" />
+              <img src="{{ request.constellation.logo.url }}" style="width:80px !important;" />
             {% else %}
               <span class="site-name text-white ml-4">{{ request.site.name }}</span>
             {% endif %}
@@ -52,9 +52,11 @@
                     <div>
                       {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl rounded-xl min-w-[100%]" hx-sync="closest form:abort" %}
                     </div>
+                    {% if profile_filter %}
                     <div class="	">
                       <button class="btn mt-4 lg:mt-0 rounded-full primary-btn lg:ml-4" type="submit"><img src="{% static 'images/magnifying-glass.png' %}" style="width:20px !important" /></button>
                     </div>
+                    {% endif %}
                   </div>
                 </form>
               </div>

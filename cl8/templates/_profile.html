@@ -38,17 +38,17 @@
             {% endif %}
             {% if profile.location %}<p class="mb-0 text-lg">{{ profile.location }}</p>{% endif %}
             <p class="mb-0 text-lg">
-                {% if profile.twitter %}
+                {% if profile.social_1 %}
                     <a class="text-blue-700"
-                       href="https://twitter.com/@{{ profile.twitter }}">Twitter</a> |
+                       href="{{ profile.social_1 }}">{{ profile.social_1_name }}</a> |
                 {% endif %}
-                {% if profile.facebook %}
+                {% if profile.social_2 %}
                     <a class="text-blue-700"
-                       href="https://facebook.com/@{{ profile.facebook }}">Facebook</a> |
+                       href="{{ profile.social_2 }}">{{ profile.social_2_name }}</a> |
                 {% endif %}
-                {% if profile.linkedin %}
+                {% if profile.social_3 %}
                     <a class="text-blue-700"
-                       href="https://linkedin.com/in/{{ profile.linkedin }}">LinkedIn</a>
+                       href="{{ profile.social_3 }}">{{ profile.social_3_name }}</a>
                 {% endif %}
             </p>
             {% if can_edit %}
