@@ -40,7 +40,7 @@
         <section class="search-component grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
           <div></div>
           <section>
-            <div class="card search-block border rounded-none">
+            <div class="card search-block ">
               <div class="card-body">
                 <form id="filter-form"
                       method="get"
@@ -50,10 +50,10 @@
                       hx-push-url="true">
                   <div class="grid grid-cols-1 lg:grid-cols-[1fr_10rem]">
                     <div>
-                      {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[100%]" hx-sync="closest form:abort" %}
+                      {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl rounded-xl min-w-[100%]" hx-sync="closest form:abort" %}
                     </div>
-                    <div>
-                      <button class="btn mt-4 lg:mt-0 lg:ml-4" type="submit">Search</button>
+                    <div class="	">
+                      <button class="btn mt-4 lg:mt-0 rounded-full primary-btn lg:ml-4" type="submit"><img src="{% static 'images/magnifying-glass.png' %}" style="width:20px !important" /></button>
                     </div>
                   </div>
                 </form>

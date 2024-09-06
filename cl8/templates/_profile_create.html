@@ -1,39 +1,39 @@
 {% load static widget_tweaks %}
 <style>
+    div>label {
+        margin-top: 1rem;
+        min-width: 10rem;
+        display: inline-block;
+    }
 
-div > label {
-    margin-top:1rem;
-    min-width: 10rem;
-    display:inline-block;
-}
+    div>input[type='text'] {
+        min-width: 40rem;
+    }
 
-div > input[type='text'] {
-    min-width: 40rem;
-}
-div > .helptext  {
-    margin-left: 10rem;
-}
-div >input[id='id_tags'] {
-    margin-left: 10rem;
-}
-div >input[type='file'] {
-    margin-left: 10rem;
-}
+    div>.helptext {
+        margin-left: 10rem;
+    }
 
+    div>input[id='id_tags'] {
+        margin-left: 10rem;
+    }
 
+    div>input[type='file'] {
+        margin-left: 10rem;
+    }
 </style>
 <div class="card-body p-0">
     <form enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {% if form.non_field_errors %}
-            <div class="w-full max-w-xs border-red-500 text-red-500 border rounded-lg p-2 text-sm">
-                {{ form.non_field_errors }}
-            </div>
+        <div class="w-full max-w-xs border-red-500 text-red-500 border rounded-lg p-2 text-sm">
+            {{ form.non_field_errors }}
+        </div>
         {% endif %}
         <div class="grid lg:grid-cols-3">
-            <div class="sidebar text-center p-3 transition-all border  lg:inline  ">
+            <div class="sidebar text-center p-3 transition-all border border-white lg:inline  ">
                 {% comment %} {{ form.photo }} {% endcomment %}
-                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4">Choose file</button>
+                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4" id="btnImportData">Choose file</button>
                 <button class="btn w-48 profile-invisible-btn rounded-full mb-2">Profile invisible</button>
                 <!-- <p class="text-sm my-4">{{ form.photo }}</p>
                 <p class="my-4 w-2/3 p-2 rounded-md {% if form.instance.visible %} bg-red-400 {% else %} bg-green-300 {% endif %}">
@@ -43,7 +43,7 @@ div >input[type='file'] {
                 </p> -->
                 <p class="text-sm  px-3 m-auto">When 'visible' is checked, your profile will show up in searches</p>
             </div>
-            <div class=" col-span-2  p-4 transition-all border  lg:inline">
+            <div class=" col-span-2  p-4 transition-all border border-white lg:inline">
                 <div class="flex justify-between mb-4">
                     <button class="mt-3 btn primary-btn rounded-full">Save changes</button>
                     <a class="mt-3 btn secondary-btn rounded-full" href="{% url 'home' %}">Cancel</a>
@@ -53,77 +53,63 @@ div >input[type='file'] {
                         <span class="label-text">{{ form.name.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.name.errors }}</span>
-                    <input type="text"
-                           placeholder="Name"
-                           name="{{ form.name.html_name }}"
-                           value="{{ form.name.value|default_if_none:'' }}"
-                           class="input input-bordered w-full empty-field myInput" />
+                    <input type="text" placeholder="Name" name="{{ form.name.html_name }}"
+                        value="{{ form.name.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.email.id_for_label }}">
                         <span class="label-text">{{ form.email.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.email.errors }}</span>
-                    <input type="text"
-                           placeholder="E-mail (work or personal) [never displayed to others]"
-                           name="{{ form.email.html_name }}"
-                           value="{{ form.email.value|default_if_none:'' }}"
-                           class="input input-bordered w-full empty-field myInput" />
+                    <input type="text" placeholder="E-mail (work or personal) [never displayed to others]"
+                        name="{{ form.email.html_name }}" value="{{ form.email.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.organisation.id_for_label }}">
                         <span class="label-text">{{ form.organisation.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.organisation.errors }}</span>
-                    <input type="text"
-                           placeholder="Organisation(s)"
-                           name="{{ form.organisation.html_name }}"
-                           value="{{ form.organisation.value|default_if_none:'' }}"
-                           class="input input-bordered w-full empty-field myInput" />
+                    <input type="text" placeholder="Organisation(s)" name="{{ form.organisation.html_name }}"
+                        value="{{ form.organisation.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.location.id_for_label }}">
                         <span class="label-text">{{ form.location.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.location.errors }}</span>
-                    <input type="text"
-                           placeholder="Location(s)"
-                           name="{{ form.location.html_name }}"
-                           value="{{ form.location.value|default_if_none:'' }}"
-                           class="input input-bordered w-full empty-field myInput" />
+                    <input type="text" placeholder="Location(s)" name="{{ form.location.html_name }}"
+                        value="{{ form.location.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.linkedin.id_for_label }}">
                         <span class="label-text">{{ form.linkedin.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.linkedin.errors }}</span>
-                    <input type="text"
-                           placeholder="LinkedIn"
-                           name="{{ form.linkedin.html_name }}"
-                           value="{{ form.linkedin.value|default_if_none:'' }}"
-                           class="input input-bordered w-full empty-field myInput" />
+                    <input type="text" placeholder="LinkedIn" name="{{ form.linkedin.html_name }}"
+                        value="{{ form.linkedin.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.twitter.id_for_label }}">
                         <span class="label-text">{{ form.twitter.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.twitter.errors }}</span>
-                    <input type="text"
-                           placeholder="Twitter"
-                           name="{{ form.twitter.html_name }}"
-                           value="{{ form.twitter.value|default_if_none:'' }}"
-                           class="input input-bordered w-full empty-field myInput" />
+                    <input type="text" placeholder="Twitter" name="{{ form.twitter.html_name }}"
+                        value="{{ form.twitter.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.facebook.id_for_label }}">
                         <span class="label-text">{{ form.facebook.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.facebook.errors }}</span>
-                    <input type="text"
-                           placeholder="Facebook"
-                           name="{{ form.facebook.html_name }}"
-                           value="{{ form.facebook.value|default_if_none:'' }}"
-                           class="input input-bordered w-full empty-field myInput" />
+                    <input type="text" placeholder="Facebook" name="{{ form.facebook.html_name }}"
+                        value="{{ form.facebook.value|default_if_none:'' }}"
+                        class="input input-bordered w-full empty-field myInput" />
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label">
@@ -148,6 +134,17 @@ div >input[type='file'] {
         <a class="mt-3 btn btn-secondary" href="{% url 'home' %}">Back</a> -->
     </form>
 </div>
-<script type="text/javascript"
-        src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script>
+    $("#btnImportData").on("click", function (e) {
+        var fileDialog = $('<input type="file">');
+        fileDialog.click();
+        fileDialog.on("change", onFileSelected);
+        return false;
+    });
+
+    var onFileSelected = function (e) {
+        console.log($(this)[0].files);
+    };
+</script>
 {{ form.media }}

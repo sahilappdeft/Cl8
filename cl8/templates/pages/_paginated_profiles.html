@@ -1,7 +1,7 @@
 {% load gravatar %}
 <div class="overflow-y-auto overflow-x-hidden max-h-[70vh]">
   {% for profile in paginated_profiles %}
-    <div class="profile card w-96 bg-base-100 mb-1">
+    <div class="profile card w-96  mb-1">
       {% comment %}
       We want our whole div to be clickable, hence the htmx-get, and cursor-pointer
       We use flex box row to have the image and text blocks side by side

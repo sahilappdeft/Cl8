@@ -31,7 +31,7 @@
         {% endif %}
         {% csrf_token %}
         <div class="grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
-            <div class="sidebar text-center p-3 transition-all border  lg:inline">
+            <div class="sidebar text-center p-3 transition-all border border-white  lg:inline">
                 {% if form.instance.photo %}
                 <img class="w-48 h-48 m-auto block rounded-full object-cover" src="{{ form.instance.photo.url }}" />
                 {% else %}
@@ -40,7 +40,7 @@
                 {% endif %}
                 {% comment %} {{ form.photo }} {% endcomment %}
                 <!-- <p class="text-sm my-4">{{ form.photo }}</p> -->
-                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4">Choose file</button>
+                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4" id="btnImportData">Choose file</button>
                 <button class="btn w-48 profile-invisible-btn rounded-full mb-2">Profile invisible</button>
                 <!-- <p
                     class="my-4 w-2/3 p-2 m-auto rounded-md {% if form.instance.visible %} bg-red-400 {% else %} bg-green-300 {% endif %}">
@@ -50,7 +50,7 @@
                 <p class="text-sm  px-3 m-auto">When 'visible' is checked, your profile will show up in searches
                 </p>
             </div>
-            <div class=" col-span-2  p-4 transition-all border  lg:inline">
+            <div class=" col-span-2  p-4 transition-all border border-white lg:inline">
                 <div class="flex justify-between mb-4">
                     <button class="mt-3 btn primary-btn rounded-full">Save changes</button>
                     <a class="mt-3 btn secondary-btn rounded-full" href="{% url 'profile-detail' profile.short_id %}">Cancel</a>
@@ -140,4 +140,16 @@
     </form>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script>
+    $("#btnImportData").on("click",function (e){
+  var fileDialog = $('<input type="file">');
+  fileDialog.click();
+  fileDialog.on("change",onFileSelected);
+    return false;
+});
+
+var onFileSelected = function(e){
+  console.log($(this)[0].files);
+};
+</script>
 {{ form.media }}

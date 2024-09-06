@@ -1,8 +1,15 @@
+body {
+    background: #ECF0F1;
+}
+
 /* login page */
 .login-card {
     border: 1px solid #c8d4de;
     border-radius: 15px;
-
+    background: #fff;
+    .input{
+        background-color: #ECF0F1;
+    }
 }
 
 .primary-btn {
@@ -15,20 +22,24 @@
         background: #ffc107ff;
     }
 }
-.secondary-btn{
+
+.secondary-btn {
     background: #c8d4deff;
     color: #000;
 }
-.profile-invisible-btn{
+
+.profile-invisible-btn {
     background: #ecf0f1ff;
     border: 1px dashed #c8d4de;
     color: #000;
 }
-.profile-visible-btn{
+
+.profile-visible-btn {
     background: #8bc34aff;
     border: 2px solid #c8d4de;
     color: #fff;
 }
+
 .border-gray {
     border: 1px solid #c8d4de;
 }
@@ -52,6 +63,7 @@
     border: 1px solid #c8d4deff !important;
     background: #c8d4deff !important;
 }
-.input:focus{
+
+.input:focus {
     outline: none;
 }
