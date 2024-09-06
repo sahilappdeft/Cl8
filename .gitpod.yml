@@ -20,7 +20,7 @@ tasks:
       createdb cl8
       just install
       gp sync-done installed
-
+  
   - name: tailwind
     command: |
       gp sync-await installed
