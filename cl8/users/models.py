@@ -377,6 +377,10 @@ class Constellation(models.Model):
         max_length=200,
         upload_to="favicons",
     )
+    welcome_message = models.TextField(null=True, blank=True)
+    welcome_heading = models.TextField(null=True, blank=True)
+    button = models.TextField(null=True, blank=True)
+
 
     signin_via_slack = models.BooleanField(default=False)
     signin_via_email = models.BooleanField(default=True)
