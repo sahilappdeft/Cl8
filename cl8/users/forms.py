@@ -144,9 +144,9 @@ class ProfileCreateForm(forms.ModelForm):
 
         profile.phone = self.cleaned_data.get("phone")
         profile.website = self.cleaned_data.get("website")
-        profile.twitter = self.cleaned_data.get("twitter")
-        profile.facebook = self.cleaned_data.get("facebook")
-        profile.linkedin = self.cleaned_data.get("linkedin")
+        profile.social_1 = self.cleaned_data.get("social_1")
+        profile.social_2 = self.cleaned_data.get("social_2")
+        profile.social_3 = self.cleaned_data.get("social_3")
         profile.bio = self.cleaned_data.get("bio")
         profile.visible = self.cleaned_data.get("visible")
         profile.short_id = safe_username()
