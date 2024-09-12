@@ -49,8 +49,9 @@ body {
     background: #ecf0f1ff;
 
     &:hover {
-        border-color: #c8d4deff;
-        background: #1a3844;
+        background: #cdddea;
+        border-color: #1a3844;
+        color: #1a3844;
     }
 }
 

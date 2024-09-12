@@ -38,21 +38,21 @@
               {{ form.non_field_errors }}
             </div>
             {% endif %}
-            <div class="form-control w-full max-w-xs mb-2">
+            <div class="form-control w-full mb-2">
               <!-- <label class="label" for="{{ form.login.id_for_label }}">
                 <span class="label-text">{{ form.login.label }}</span>
               </label> -->
               <span class="label-text text-red-500 px-1">{{ form.login.errors }}</span>
               <input type="text" placeholder="E-mail" name="{{ form.login.html_name }}"
-                class="input input-bordered w-full max-w-xs" />
+                class="input input-bordered w-full" />
             </div>
-            <div class="form-control w-full max-w-xs">
+            <div class="form-control w-full">
               <!-- <label class="label" for="{{ form.password.id_for_label }}">
                 <span class="label-text">{{ form.password.label }}</span>
               </label> -->
               <span class="label-text text-red-500 px-1">{{ form.password.errors }}</span>
               <input type="password" placeholder="Password" name="{{ form.password.html_name }}"
-                class="input input-bordered w-full max-w-xs" />
+                class="input input-bordered w-full" />
             </div>
             <div class="flex items-center justify-between mt-4">
               <div>
@@ -64,7 +64,7 @@
                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                 {% endif %}
               </div>
-              <a class="inline-block text-sm ml-4" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?"%}</a>
+              <a class="inline-block text-red-500 underline text-sm ml-4" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?"%}</a>
             </div>
 
             <div class="card-actions items-center mt-4  content-center">

@@ -20,7 +20,7 @@
                      class="rounded-full"
                      alt="profile photo" />
             {% else %}
-                {% gravatar profile.user.email 150  "Profile via gravatar.com" "rounded" %}
+                {% gravatar profile.user.email 150  "Profile via gravatar.com" "rounded-full" %}
             {% endif %}
         </div>
         <div>
@@ -60,7 +60,7 @@
     <div class="px-0">
         {% if profile_rendered_bio %}
             {% comment %} <h3>Bio</h3> {% endcomment %}
-            <div class="prose text-lg text-black font-medium">{{ profile_rendered_bio|safe }}</div>
+            <div class="prose text-lg text-black font-normal">{{ profile_rendered_bio|safe }}</div>
         {% endif %}
         <div class="tag-listings mt-4">
             {% if grouped_tags %}
