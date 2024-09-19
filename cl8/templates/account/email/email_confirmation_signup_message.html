@@ -1,0 +1,13 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Confirm your email address</title>
+</head>
+<body>
+    <p>Hello {{ user.username }},</p>
+    <p>Thank you for registering at Constellate. To complete your registration, please confirm your email address by clicking the link below:</p>
+    <p><a href="{{ activate_url }}">Confirm your email address {{ activate_url }}</a></p>
+    <p>If you did not request this email, please ignore it.</p>
+    <p>Thank you for using Constellate!</p>
+</body>
+</html>
