@@ -195,7 +195,8 @@ class Profile(models.Model):
 
         # Extract the base domain without subdomains and TLD
         match = re.match(r'^([^\.]+)\.', domain)
-        return match.group(1) if match else domain
+        name = match.group(1) if match else domain
+        return name.capitalize()
     
     @property
     def social_2_name(self):
@@ -212,7 +213,8 @@ class Profile(models.Model):
 
         # Extract the base domain without subdomains and TLD
         match = re.match(r'^([^\.]+)\.', domain)
-        return match.group(1) if match else domain
+        name = match.group(1) if match else domain
+        return name.capitalize()
     
     @property
     def social_3_name(self):
@@ -229,7 +231,8 @@ class Profile(models.Model):
 
         # Extract the base domain without subdomains and TLD
         match = re.match(r'^([^\.]+)\.', domain)
-        return match.group(1) if match else domain
+        name = match.group(1) if match else domain
+        return name.capitalize()
 
     def tags_by_grouping(self):
         """
