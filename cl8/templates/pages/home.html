@@ -3,10 +3,10 @@
 {% block content %}
   <main class="">
     {% comment %} add our search component spanning the full width {% endcomment %}
-    <section class="search-component grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+    <section id="home-search-component" class="search-component grid grid-cols-[1fr_minmax(auto,70rem)_1fr]" style="display:none;">
       <div></div>
       <section>
-        <div class="card search-block border rounded-none">
+        <div class="card search-block border-white border rounded-none">
           <div class="card-body">
             <div class="active-tags">{% include '_active_tags_list.html' %}</div>
             <div class="profile-count">
@@ -19,6 +19,7 @@
           </div>
         </div>
       </section>
+    </section>
       <div></div>
       {% comment %} close search component {% endcomment %}
     </section>
@@ -64,9 +65,34 @@
   {{ profile_filter.form.media }}
   <script src="{% static 'js/htmx.v1.9.8.min.js' %}" defer></script>
   <script>
+
+    function checkForTagsInURL(){
+      const urlParams = new URLSearchParams(window.location.search);
+      const tags = urlParams.getAll('tags');
+      console.log(tags, "::::::::::::::::::", tags.length)
+
+      const searchComponent = document.getElementById('home-search-component');
+      console.log("searchComponent", searchComponent)
+      if (searchComponent) {
+        if (tags.length > 0) {
+            // Show the component if there are tags in the URL
+            console.log("Tags found, showing the search component");
+            searchComponent.style.display = 'grid';
+        } else {
+            // Hide the component if no tags are present
+            console.log("No tags found, hiding the search component");
+            searchComponent.style.display = 'none';
+        }
+    }
+}
+
     document.addEventListener("DOMContentLoaded", (event) => {
       console.debug("DOM fully loaded and parsed");
       // htmx.logAll();
+      
+      //check tage urls
+      checkForTagsInURL()
+
 
       htmx.on("htmx:load", function(evt) {
         const elt = evt.detail.elt
@@ -114,6 +140,7 @@
     item.addEventListener('click', event => {
       const selectorString = `#id_tags option[value="${event.target.dataset.tagId}"]`
       const chosenTagOption = document.querySelector(selectorString)
+
       // toggle the selected status of the tag
       chosenTagOption.selected = !chosenTagOption.selected
       // announce the toggle event the profile list can listen for it 
@@ -121,18 +148,24 @@
       document.body.dispatchEvent(new Event("toggle-tag"))
       })
     })
+    setTimeout(checkForTagsInURL, 50);
+
+    //check tage urls
+    checkForTagsInURL()
     }
+
     addlistenersForActiveTags()
 
   
 
 
   document.body.addEventListener('active-tags-changed', (event) => {
-    console.debug("active-tags-changed")
+    console.log("active-tags-changed")
     console.debug({event })
     const activeTagsList = document.querySelector('.search-block .active-tags .tag_list')
+
     if (event.detail.rendered_html) {
-      if (activeTagsList) {
+      if (activeTagsList) { 
         activeTagsList.innerHTML = event.detail.rendered_html
       }
       
@@ -141,8 +174,13 @@
     // and the event listeners will have been removed along with 
     // the DOM elements
     addlistenersForActiveTags()
+    
+    setTimeout(checkForTagsInURL, 50);
+
+    //check tage urls
+    checkForTagsInURL()
   })
 
-
   </script>
+  
 {% endblock scripts %}

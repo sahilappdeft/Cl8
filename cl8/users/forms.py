@@ -109,6 +109,7 @@ class ProfileCreateForm(forms.ModelForm):
 
     tags = ModelMultipleChoiceField(
         queryset=taggit_models.Tag.objects.all(),
+        required=False,  # Set required to False
         widget=autocomplete.ModelSelect2Multiple(url="tag-autocomplete-with-create"),
     )
     
