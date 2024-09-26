@@ -303,6 +303,7 @@ class Profile(models.Model):
     def get_context_for_emails(self) -> dict:
         current_site = Site.objects.get_current()
         constellation = Constellation.objects.get(site=current_site)
+        email_confirmation = SendInviteEmailContent.objects.filter(site=current_site).first()
         support_email_address = settings.SUPPORT_EMAIL
 
         return {
@@ -310,6 +311,7 @@ class Profile(models.Model):
             "support_email_address": support_email_address,
             "constellation": constellation,
             "site": current_site,
+            "email_confirmation":email_confirmation,
         }
 
     def send_invite_mail(self):
@@ -323,9 +325,38 @@ class Profile(models.Model):
             [self.user.email],
             html_message=rendered_templates["html"],
         )
+        
 
     def generate_invite_mail(self):
+        from django.template import Template, Context
+
         context = self.get_context_for_emails()
+        
+        # Fetch the email confirmation template content (assuming you have it stored in the context)
+        email_confirmation = context.get("email_confirmation")
+
+        if email_confirmation:
+            # Create a Django Template object from the email content
+            email_content_template = Template(email_confirmation.email_content)
+
+            # Render the template with the current context
+            rendered_email_content = email_content_template.render(Context(context))
+
+            # Update the context with the rendered email content
+            context["email_confirmation_content"] = rendered_email_content
+        else:
+            # If no custom email template is found, use a default message with templating
+            default_message_template = Template(
+                "<p>Dear {{ profile.name }} </p>"
+                "<p>Welcome to {{ constellation }}.</p>"
+                "<p><em>(Copy goes here to mention terms of service and community guidelines)</em></p>"
+                "<p>If you have any problems logging in, or you have not attempted to log in, please <a href='mailto:{{ support_email_address }}'>contact support.</a></p>"
+            )
+            
+            context["email_confirmation_content"] = default_message_template.render(Context(context))
+
+
+        # Now render the invite email as plain text and MJML
         rendered_invite_txt = render_to_string(
             "invite_new_profile.txt",
             context,
@@ -335,12 +366,11 @@ class Profile(models.Model):
             context,
         )
 
+        # Optionally, view the rendered HTML in the browser for testing/debugging
         from cl8.utils.templating import view_rendered_html_in_browser
-
         view_rendered_html_in_browser(rendered_invite_html)
 
         return {"text": rendered_invite_txt, "html": rendered_invite_html}
-
 
 class Constellation(models.Model):
     """
@@ -421,3 +451,100 @@ class CATJoinRequest(models.Model):
 
     class Meta:
         indexes = [models.Index(fields=["email", "joined_at"])]
+
+
+class SendInviteEmailContent(models.Model):
+    site = models.OneToOneField(
+        Site,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="email_confirm_template",
+    )
+
+    email_title = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Enter the subject of the email. For the site name, use `{{ constellation.site.name }}`.",
+        default="Welcome to {{ constellation.site.name }}"
+    )
+    email_content = models.TextField(
+        blank=True,
+        help_text=(
+            "Enter the body of the email. "
+            "Use `{{ profile.name }}` for the user's name , `{{ constellation }}` for the site name and {{ support_email_address }} for the support email adrdress."
+        ),
+        default=(
+            "<p>Dear {{ profile.name }} </p>"
+            "<p>Welcome to {{ constellation }}.</p>"
+            "<p><em>(Copy goes here to mention terms of service and community guidelines)</em></p>"
+            "<p>If you have any problems logging in, or you have not attempted to log in, please <a href='mailto:{{ support_email_address }}'>contact support.</a></p>"
+        )
+    )
+
+    def __str__(self):
+        return f"{self.site.name}"
+
+class SendInviteEmailContent(models.Model):
+    site = models.OneToOneField(
+        Site,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="email_confirm_template",
+    )
+
+    email_title = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Enter the subject of the email. For the site name, use `{{ constellation.site.name }}`.",
+        default="Welcome to {{ constellation.site.name }}"
+    )
+    email_content = models.TextField(
+        blank=True,
+        help_text=(
+            "Enter the body of the email. "
+            "Use `{{ profile.name }}` for the user's name , `{{ constellation }}` for the site name and {{ support_email_address }} for the support email adrdress."
+        ),
+        default=(
+            "<p>Dear {{ profile.name }} </p>"
+            "<p>Welcome to {{ constellation }}.</p>"
+            "<p><em>(Copy goes here to mention terms of service and community guidelines)</em></p>"
+            "<p>If you have any problems logging in, or you have not attempted to log in, please <a href='mailto:{{ support_email_address }}'>contact support.</a></p>"
+        )
+    )
+
+    def __str__(self):
+        return f"{self.site.name}"
+    
+    
+class PasswordResetEmailContent(models.Model):
+    site = models.OneToOneField(
+        Site,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="password_reset_template",
+    )
+
+    email_title = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Enter the subject of the email. For the site name, use `{{ constellation }}`.",
+        default="Password Reset Request for {{ constellation }}"
+    )
+    email_content = models.TextField(
+        blank=True,
+        help_text=(
+            "Enter the body of the email. "
+            "Use `{{ profile.name }}` for the user's username, `{{ reset_link }}` for the password reset link, and `{{ constellation }}` for the site name."
+        ),
+        default=(
+            "<p>Hello {{ profile.name }},</p>"
+            "<p>You requested a password reset for your account on {{ constellation }}.</p>"
+            "<p>Click the link below to reset your password:</p>"
+            "<p><a href='{{ reset_link }}'>Reset Password</a></p>"
+            "<p>If you did not request this email, please ignore it.</p>"
+            "<p>Thank you!</p>"
+        )
+    )
+
+    def __str__(self):
+        return f"Password Reset Template for {self.site.name}"

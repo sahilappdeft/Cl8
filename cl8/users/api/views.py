@@ -12,10 +12,16 @@ from django.core.files.images import ImageFile
 from django.db.models import Case, When
 from django.http import HttpRequest
 from django.shortcuts import render
-from django.urls import resolve
+from django.urls import resolve, reverse
 from django.utils.text import slugify
 from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import CreateView
+from allauth.account.views import PasswordResetView
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+
 from markdown_it import MarkdownIt
 from rest_framework import status
 from rest_framework.decorators import action
@@ -35,12 +41,13 @@ from taggit.models import Tag
 
 from ..filters import ProfileFilter
 from ..forms import ProfileUpdateForm, ProfileCreateForm
-from ..models import Cluster, Profile
+from ..models import Cluster, Profile, Constellation, PasswordResetEmailContent
 from .serializers import (
     ClusterSerializer,
     ProfilePicSerializer,
     ProfileSerializer,
     TagSerializer,
+    
 )
 
 User = get_user_model()
@@ -517,3 +524,48 @@ class TagAutoCompleteView(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+
+class CustomPasswordResetView(PasswordResetView):
+    def send_mail(self, template_name, email, context):
+        # Generate the password reset URL
+        current_site = get_current_site(self.request)
+        context['reset_link'] = self.get_success_url(email)  # Generate the reset URL
+        
+        # Fetch the PasswordResetEmailContent for the current site
+        try:
+            email_template = PasswordResetEmailContent.objects.get(site=current_site)
+        except PasswordResetEmailContent.DoesNotExist:
+            # Handle case where the email template does not exist
+            email_template = None
+            
+        # Populate the context with email template details and constellation
+        context['constellation'] = Constellation.objects.get(site=current_site)
+        
+        # Retrieve the user and their profile
+        user = self.get_user(email)  # Assuming you have a method to get the user by email
+        context['user'] = user
+        context['profile'] = Profile.objects.get(user=user)  # Fetch the user's profile
+        
+        if email_template:
+            # Use the email template if it exists
+            subject = render_to_string(template_name, context).strip()
+            email_body = render_to_string(email_template.email_content, context)
+        else:
+            # Fallback if no template is found
+            subject = "Password Reset Request"
+            email_body = render_to_string('account/email/default_password_reset_key_message.html', context)
+
+        # Send the email
+        send_mail(subject, email_body, None, [email], html_message=email_body)
+
+    def get_success_url(self, email):
+        # Custom logic to generate the password reset URL
+        uid = urlsafe_base64_encode(force_bytes(email))
+        return reverse('account_reset_password_from_key', args=[uid])
+    
+    def get_user(self, email):
+        # Method to retrieve the user based on their email
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        return User.objects.get(email=email)

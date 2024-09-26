@@ -14,6 +14,7 @@ from cl8.users.api.views import (
     ProfileEditView,
     TagAutoCompleteView,
     homepage,
+    CustomPasswordResetView,
 )
 
 
@@ -35,6 +36,9 @@ urlpatterns = [
     # default allauth User management
     path("users/", include("cl8.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    #custom password rest view
+    path('accounts/password/reset/', CustomPasswordResetView.as_view(), name='account_reset_password'),
+
     # add our extra custom providers and views for sign-in with slack
     path("accounts/", include("cl8.users.slack_openid_connect.urls")),
     # basic CMS pages
