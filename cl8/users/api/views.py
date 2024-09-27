@@ -527,7 +527,9 @@ class TagAutoCompleteView(autocomplete.Select2QuerySetView):
 
 
 class CustomPasswordResetView(PasswordResetView):
+    
     def send_mail(self, template_name, email, context):
+        print("kalia kalialadjsaldjlajdsaashdskajgasjkfgskjfgsfjsag")
         # Generate the password reset URL
         current_site = get_current_site(self.request)
         context['reset_link'] = self.get_success_url(email)  # Generate the reset URL

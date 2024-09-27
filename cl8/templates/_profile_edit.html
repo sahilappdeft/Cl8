@@ -62,6 +62,8 @@
             <div class=" col-span-2  p-4 transition-all border border-white lg:inline">
                 <div class="flex justify-between mb-4">
                     <button class="mt-3 btn primary-btn rounded-full">Save changes</button>
+                    <a class="mt-3 btn bg-[#ff4d11] border-[#ff4d11] hover:bg-[#ff4d11] rounded-full" 
+                    href="{% url 'account_reset_password' %}">Email password reset</a>
                     <a class="mt-3 btn secondary-btn rounded-full" href="{% url 'profile-detail' profile.short_id %}">Cancel</a>
                 </div>
                 <div class="form-control w-full mb-4">

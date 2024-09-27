@@ -40,14 +40,14 @@
             <p class="mb-0 text-lg">
                 {% if profile.social_1 %}
                     <a class="text-blue-700"
-                       href="{{ profile.social_1 }}">{{ profile.social_1_name }}</a> |
+                       href="{{ profile.social_1 }}">{{ profile.social_1_name }}</a> 
                 {% endif %}
                 {% if profile.social_2 %}
-                    <a class="text-blue-700"
-                       href="{{ profile.social_2 }}">{{ profile.social_2_name }}</a> |
+                    | <a class="text-blue-700"
+                       href="{{ profile.social_2 }}">{{ profile.social_2_name }}</a> 
                 {% endif %}
                 {% if profile.social_3 %}
-                    <a class="text-blue-700"
+                    | <a class="text-blue-700"
                        href="{{ profile.social_3 }}">{{ profile.social_3_name }}</a>
                 {% endif %}
             </p>

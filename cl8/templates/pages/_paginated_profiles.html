@@ -6,7 +6,7 @@
       We want our whole div to be clickable, hence the htmx-get, and cursor-pointer
       We use flex box row to have the image and text blocks side by side
       {% endcomment %}
-      <div class="card-body p-3 flex-row hover:bg-yellow-100 hover:shadow-lg hover:cursor-pointer"
+      <div class="card-body p-3 flex-row hover:bg-[#CDDC39] hover:shadow-lg hover:cursor-pointer"
            hx-get="{% url 'profile-detail' profile.short_id %}"
            hx-target="#profile-slot"
            hx-include="#filter-form"
