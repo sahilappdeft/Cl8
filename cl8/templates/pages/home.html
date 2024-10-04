@@ -69,25 +69,20 @@
     function checkForTagsInURL(){
       const urlParams = new URLSearchParams(window.location.search);
       const tags = urlParams.getAll('tags');
-      console.log(tags, "::::::::::::::::::", tags.length)
 
       const searchComponent = document.getElementById('home-search-component');
-      console.log("searchComponent", searchComponent)
       if (searchComponent) {
         if (tags.length > 0) {
             // Show the component if there are tags in the URL
-            console.log("Tags found, showing the search component");
             searchComponent.style.display = 'grid';
         } else {
             // Hide the component if no tags are present
-            console.log("No tags found, hiding the search component");
             searchComponent.style.display = 'none';
         }
     }
 }
 
     document.addEventListener("DOMContentLoaded", (event) => {
-      console.debug("DOM fully loaded and parsed");
       // htmx.logAll();
       
       //check tage urls
@@ -113,16 +108,13 @@
       // 'htmx.on' is not the same as 'document.body.addEventListener',
       // so we use the vanilla js version
       document.body.addEventListener("update-profile", function(evt) {
-        console.debug({detail:evt.detail})
         const profileSlot = htmx.find("#profile-slot")
         const profileList = htmx.find(".sidebar")
 
         if (evt.detail.hide_profile_list) {
-          console.debug("showing profile, hiding profile list")
           profileSlot.classList.remove("hidden")
           profileList.classList.add("hidden")
         } else {
-          console.debug("hiding profile, showing profile list")
           profileSlot.classList.add("hidden")
           profileList.classList.remove("hidden")
         }
@@ -160,8 +152,6 @@
 
 
   document.body.addEventListener('active-tags-changed', (event) => {
-    console.log("active-tags-changed")
-    console.debug({event })
     const activeTagsList = document.querySelector('.search-block .active-tags .tag_list')
 
     if (event.detail.rendered_html) {

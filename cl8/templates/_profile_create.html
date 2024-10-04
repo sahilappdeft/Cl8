@@ -202,5 +202,21 @@
             $("#visibilityStatus").val("false");
         }
     });
+
+    document.getElementById('id_bio').addEventListener('input', function (event) {
+        const searchQuery = event.target.value;
+        if (searchQuery) {
+          const newUrl = `/?bio=${encodeURIComponent(searchQuery)}`;
+          window.location.href = newUrl;  // Redirects to the new URL with the search query as a parameter
+        }
+      });
+
+      document.getElementById('search-button').addEventListener('click', function () {
+        const searchQuery = document.getElementById('bio-search').value;
+        if (searchQuery) {
+          const newUrl = `/?bio=${encodeURIComponent(searchQuery)}`;
+          window.location.href = newUrl; // Redirect to the URL with the bio search query
+        }
+      });
     </script>
 {{ form.media }}

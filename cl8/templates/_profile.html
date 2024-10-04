@@ -37,6 +37,7 @@
                 </p>
             {% endif %}
             {% if profile.location %}<p class="mb-0 text-lg">{{ profile.location }}</p>{% endif %}
+            {% if profile.organisation %}<p class="mb-0 text-lg">{{ profile.organisation }}</p>{% endif %}
             <p class="mb-0 text-lg">
                 {% if profile.social_1 %}
                     <a class="text-blue-700"
@@ -130,25 +131,4 @@ document.querySelectorAll('#profile-slot .badge').forEach(item => {
     })
 })
 
-/**
-* Clear the profile slot and set the path in the url back to "/", 
-* adding the GET params, then the url to the history
-*/
-function clearProfile() {
-    console.log('clearing profile')
-
-    // set the path in the url back to "/", adding the GET params
-    // from the current URL
-    const currentUrl = new URL(window.location.href)
-    const newUrl = new URL('/', window.location.origin)
-    newUrl.search = currentUrl.search
-    window.history.pushState({}, '', newUrl)
-
-    // then set the profile slot to the empty profile
-    const emptyProfile = document.querySelector('#empty-profile').innerHTML
-    document.querySelector('#profile-slot .profile').innerHTML = emptyProfile
-    htmx.trigger("body", "update-profile")
-
-}
-document.querySelector('#clear-profile').addEventListener('click', clearProfile)
 </script>

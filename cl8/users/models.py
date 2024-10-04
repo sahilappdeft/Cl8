@@ -495,8 +495,8 @@ class SendInviteEmailContent(models.Model):
     email_title = models.TextField(
         blank=True,
         null=True,
-        help_text="Enter the subject of the email. For the site name, use `{{ constellation.site.name }}`.",
-        default="Welcome to {{ constellation.site.name }}"
+        help_text="Enter the subject of the email. For the site name, use `{{ constellation }}`.",
+        default="Welcome to {{ constellation }}"
     )
     email_content = models.TextField(
         blank=True,

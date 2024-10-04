@@ -403,3 +403,5 @@ AIRTABLE_TABLE = env.str("DJANGO_AIRTABLE_TABLE", default=None)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+
+ACCOUNT_ADAPTER = 'cl8.users.api.views.CustomAccountAdapter'

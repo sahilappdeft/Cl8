@@ -313,6 +313,18 @@ class ProfileEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
             "email": self.object.user.email,
         }
         return kwargs
+    
+    def get_context_data(self, **kwargs):
+        """
+        Add extra context to the template.
+        """
+        # Fetch the default context from the superclass
+        context = super().get_context_data(**kwargs)
+
+        # Fetch additional context (e.g., profile list)
+        context = fetch_profile_list(self.request, context)
+
+        return context
 
 
 class ProfileCreateView(CreateView):
@@ -339,6 +351,18 @@ class ProfileCreateView(CreateView):
         If the form is valid, save the associated model.
         """
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        """
+        Add extra context to the template.
+        """
+        # Fetch the default context from the superclass
+        context = super().get_context_data(**kwargs)
+
+        # Fetch additional context (e.g., profile list)
+        context = fetch_profile_list(self.request, context)
+
+        return context
 
 
 class ProfileViewSet(
@@ -526,48 +550,74 @@ class TagAutoCompleteView(autocomplete.Select2QuerySetView):
         return qs
 
 
-class CustomPasswordResetView(PasswordResetView):
-    
-    def send_mail(self, template_name, email, context):
-        print("kalia kalialadjsaldjlajdsaashdskajgasjkfgskjfgsfjsag")
-        # Generate the password reset URL
-        current_site = get_current_site(self.request)
-        context['reset_link'] = self.get_success_url(email)  # Generate the reset URL
+from allauth.account.adapter import DefaultAccountAdapter
+from django.template import Template, Context
+from django.utils.translation import gettext as _
+from django.contrib.auth.tokens import default_token_generator
+from allauth.account.utils import user_pk_to_url_str, filter_users_by_email
+
+class CustomAccountAdapter(DefaultAccountAdapter):
+    def send_mail(self, template_prefix, email, context):
+        print("Sending custom password reset email")
         
-        # Fetch the PasswordResetEmailContent for the current site
-        try:
-            email_template = PasswordResetEmailContent.objects.get(site=current_site)
-        except PasswordResetEmailContent.DoesNotExist:
-            # Handle case where the email template does not exist
-            email_template = None
-            
-        # Populate the context with email template details and constellation
-        context['constellation'] = Constellation.objects.get(site=current_site)
-        
-        # Retrieve the user and their profile
-        user = self.get_user(email)  # Assuming you have a method to get the user by email
+        # Fetch the user
+        users = filter_users_by_email(email)
+        user = users[0] if users else None
         context['user'] = user
-        context['profile'] = Profile.objects.get(user=user)  # Fetch the user's profile
-        
-        if email_template:
-            # Use the email template if it exists
-            subject = render_to_string(template_name, context).strip()
-            email_body = render_to_string(email_template.email_content, context)
+        context['profile'] = Profile.objects.get(user=user)
+
+        # Use the default `allauth` method to generate the password reset URL
+        reset_url = self.request.build_absolute_uri(
+            reverse("account_reset_password_from_key", args=[user_pk_to_url_str(user), default_token_generator.make_token(user)])
+        )
+        context['reset_link'] = reset_url
+
+        # Fetch the current site
+        current_site = get_current_site(self.request)
+        context["constellation"] = Constellation.objects.get(site=current_site)
+
+        # Fetch the PasswordResetEmailContent for the current site
+        email_confirmation = PasswordResetEmailContent.objects.filter(site=current_site).first()
+
+        if email_confirmation:
+            # Create a Django Template object from the email content
+            email_content_template = Template(email_confirmation.email_content)
+            context["password_reset_content"] = email_content_template.render(Context(context))
         else:
-            # Fallback if no template is found
-            subject = "Password Reset Request"
-            email_body = render_to_string('account/email/default_password_reset_key_message.html', context)
+            # Default password reset message template
+            default_message_template = Template(
+                '''<p>Hello {{ profile.name }},</p>
+                <p>You requested a password reset for your account on {{ constellation }}.</p>
+                <p>Click the link below to reset your password:</p>
+                <p><a href="{{ reset_link|safe }}">Reset Password</a></p>
+                <p>If you did not request this email, please ignore it.</p>
+                <p>Thank you!</p>'''
+            )
+            context["password_reset_content"] = default_message_template.render(Context(context))
+
+        print(context["password_reset_content"], ":::::::::::")
+
+        # Render the invite email as plain text and MJML
+        rendered_reset_txt = render_to_string(
+            "account/email/password_reset_key_message.txt",
+            context,
+        )
+        
+        rendered_reset_html = render_to_string(
+            "account/email/password_reset_key_message.html",
+            context,
+        )
 
         # Send the email
-        send_mail(subject, email_body, None, [email], html_message=email_body)
+        send_mail(
+            f"Welcome to { context['constellation'] }",
+            rendered_reset_txt,
+            None,
+            [email],
+            html_message=rendered_reset_html,
+        )
 
-    def get_success_url(self, email):
-        # Custom logic to generate the password reset URL
-        uid = urlsafe_base64_encode(force_bytes(email))
-        return reverse('account_reset_password_from_key', args=[uid])
-    
     def get_user(self, email):
-        # Method to retrieve the user based on their email
         from django.contrib.auth import get_user_model
         User = get_user_model()
         return User.objects.get(email=email)
