@@ -16,11 +16,12 @@ from django.urls import resolve, reverse
 from django.utils.text import slugify
 from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import CreateView
-from allauth.account.views import PasswordResetView
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
+from allauth.account.adapter import DefaultAccountAdapter
+from django.template import Template, Context
+from django.utils.translation import gettext as _
+from allauth.account.utils import filter_users_by_email
 
 from markdown_it import MarkdownIt
 from rest_framework import status
@@ -159,10 +160,9 @@ def hide_profile_list(request: HttpRequest, context: dict):
     # the list to click through to
     if active_search:
         return False
-
     # if we have no profile and no active search -- we show the profile slot,
     # hiding sidebar on mobile (our profile slot has the instructions)
-    return True
+    return False
 
 
 @login_required
@@ -224,6 +224,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         ctx = fetch_profile_list(self.request, ctx)
 
         if self.object is not None:
+            print("aya aya ya")
             ctx["profile"] = self.object
             active_tag_ids = self.request.GET.getlist("tags")
 
@@ -245,6 +246,9 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         ):
             ctx["can_edit"] = True
 
+        should_hide_profile_list = hide_profile_list(self.request, ctx)
+        ctx["hide_profile_list"] = should_hide_profile_list
+        
         return ctx
 
     def get(self, request, *args, **kwargs):
@@ -550,38 +554,51 @@ class TagAutoCompleteView(autocomplete.Select2QuerySetView):
         return qs
 
 
-from allauth.account.adapter import DefaultAccountAdapter
-from django.template import Template, Context
-from django.utils.translation import gettext as _
-from django.contrib.auth.tokens import default_token_generator
-from allauth.account.utils import user_pk_to_url_str, filter_users_by_email
-
 class CustomAccountAdapter(DefaultAccountAdapter):
+    """
+    CustomAccountAdapter class for handling email sending during account actions.
+    
+    This class overrides the default behavior of sending emails in Django
+    allauth, allowing for custom templates and messages based on the current site.
+    """
+    
     def send_mail(self, template_prefix, email, context):
-        print("Sending custom password reset email")
-        
-        # Fetch the user
+
         users = filter_users_by_email(email)
         user = users[0] if users else None
         context['user'] = user
-        context['profile'] = Profile.objects.get(user=user)
+        
+        # Check if the user exists
+        if user:
+            context['password_reset_url'] = self.get_password_reset_url(context)
+            # User exists, get their profile
+            context['profile'] = Profile.objects.get(user=user)
+            email_content = self.get_email_content(context)
+            
+            # Send the email to the user
+            send_mail(
+                f"Welcome to {context['constellation']}",
+                email_content,
+                None,
+                [email],
+                html_message=email_content,
+            )
+        else:
+            raise ValueError("Invalid email address. No account associated with this email.")
 
-        # Use the default `allauth` method to generate the password reset URL
-        reset_url = self.request.build_absolute_uri(
-            reverse("account_reset_password_from_key", args=[user_pk_to_url_str(user), default_token_generator.make_token(user)])
-        )
-        context['reset_link'] = reset_url
-
-        # Fetch the current site
+    def get_email_content(self, context):
         current_site = get_current_site(self.request)
-        context["constellation"] = Constellation.objects.get(site=current_site)
 
-        # Fetch the PasswordResetEmailContent for the current site
+        # Try to get the custom email template from the database
         email_confirmation = PasswordResetEmailContent.objects.filter(site=current_site).first()
 
         if email_confirmation:
             # Create a Django Template object from the email content
             email_content_template = Template(email_confirmation.email_content)
+            context["constellation"] = current_site.name  # Set site name
+            context["reset_link"] = self.get_password_reset_url(context)  # Set password reset link
+            
+            # Render the template with the context
             context["password_reset_content"] = email_content_template.render(Context(context))
         else:
             # Default password reset message template
@@ -593,31 +610,16 @@ class CustomAccountAdapter(DefaultAccountAdapter):
                 <p>If you did not request this email, please ignore it.</p>
                 <p>Thank you!</p>'''
             )
+
+            # Set the necessary context variables for the default message
+            context["constellation"] = current_site.name  # Set site name
+            context["reset_link"] = self.get_password_reset_url(context)  # Set password reset link
+            
+            # Render the default template with the context
             context["password_reset_content"] = default_message_template.render(Context(context))
 
-        print(context["password_reset_content"], ":::::::::::")
+        print(context["password_reset_content"], "Rendered email content")  # Debug output
+        return context["password_reset_content"]  # Return the rendered HTML safely
 
-        # Render the invite email as plain text and MJML
-        rendered_reset_txt = render_to_string(
-            "account/email/password_reset_key_message.txt",
-            context,
-        )
-        
-        rendered_reset_html = render_to_string(
-            "account/email/password_reset_key_message.html",
-            context,
-        )
-
-        # Send the email
-        send_mail(
-            f"Welcome to { context['constellation'] }",
-            rendered_reset_txt,
-            None,
-            [email],
-            html_message=rendered_reset_html,
-        )
-
-    def get_user(self, email):
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        return User.objects.get(email=email)
+    def get_password_reset_url(self, context):
+        return context['password_reset_url']

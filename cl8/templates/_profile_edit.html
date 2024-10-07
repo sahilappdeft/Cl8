@@ -73,8 +73,9 @@
             <div class="col-span-2 p-4 transition-all border border-white">
                 <div class="flex flex-col md:flex-row justify-between mb-4 space-y-3 md:space-y-0">
                     <button class="btn primary-btn rounded-full w-full md:w-auto">Save changes</button>
-                    <a class="btn bg-[#ff4d11] border-[#ff4d11] hover:bg-[#ff4d11] rounded-full w-full md:w-auto"
-                        href="{% url 'account_reset_password' %}">Email password reset</a>
+                    {% if request.user.is_superuser  %}
+                        <a id="resetPasswordBtn" class="btn bg-[#ff4d11] border-[#ff4d11] hover:bg-[#ff4d11] rounded-full w-full md:w-auto" href="#">Email password reset</a>
+                    {% endif %}
                     <a class="btn secondary-btn rounded-full w-full md:w-auto"
                         href="{% url 'profile-detail' profile.short_id %}">Cancel</a>
                 </div>
@@ -87,7 +88,7 @@
 
                 <div class="form-control w-full mb-4">
                     <span class="label-text text-red-500 px-1">{{ form.email.errors }}</span>
-                    <input type="text" placeholder="E-mail (work or personal) [never displayed to others]"
+                    <input type="text" id="emailInput" placeholder="E-mail (work or personal) [never displayed to others]"
                         name="{{ form.email.html_name }}" value="{{ form.email.value }}"
                         class="input input-bordered w-full empty-field myInput" />
                 </div>
@@ -217,4 +218,37 @@
         }
       });
 </script>
-{{ form.media }}
+
+<script>
+    $(document).ready(function () {
+        $("#resetPasswordBtn").on("click", function (e) {
+            e.preventDefault(); // Prevent the default anchor behavior
+            
+            // Get the email from the input field
+            const email = $("#emailInput").val();
+
+            // Check if the email field is not empty
+            if (email) {
+                // Send POST request to the Allauth account reset password API
+                $.ajax({
+                    url: "{% url 'account_reset_password' %}", // Adjust if needed
+                    type: "POST",
+                    data: {
+                        email: email,
+                        csrfmiddlewaretoken: '{{ csrf_token }}' // Include CSRF token
+                    },
+                    success: function (response) {
+                        alert('Password reset email sent successfully!');
+                        // Handle the response as needed
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + error);
+                        // Handle the error as needed
+                    }
+                });
+            } else {
+                alert('Please enter your email address.');
+            }
+        });
+    });
+</script>

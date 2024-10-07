@@ -25,7 +25,7 @@ class ConstellationMiddleware:
 
 
 from django.contrib.sites.shortcuts import get_current_site
-from .models import Constellation, SendInviteEmailContent
+from .models import Constellation, SendInviteEmailContent, PasswordResetEmailContent
 
 
 class SiteConfigMiddleware:
@@ -51,6 +51,11 @@ class SiteConfigMiddleware:
             request.email_confirmation = SendInviteEmailContent.objects.get(site=current_site)
         except SendInviteEmailContent.DoesNotExist:
             request.email_confirmation = None
+            
+        try:
+            request.password_reset_content = PasswordResetEmailContent.objects.get(site=current_site)
+        except PasswordResetEmailContent.DoesNotExist:
+            request.password_reset_content = None
 
         # Call the next middleware or view
         response = self.get_response(request)
