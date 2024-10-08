@@ -584,7 +584,8 @@ class CustomAccountAdapter(DefaultAccountAdapter):
                 html_message=email_content,
             )
         else:
-            raise ValueError("Invalid email address. No account associated with this email.")
+            # raise ValueError("Invalid email address. No account associated with this email.")
+            pass
 
     def get_email_content(self, context):
         current_site = get_current_site(self.request)

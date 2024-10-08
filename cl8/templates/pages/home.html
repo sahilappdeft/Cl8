@@ -24,21 +24,21 @@
       {% comment %} close search component {% endcomment %}
     </section>
     {% comment %} main content  {% endcomment %}
-    <section class="grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+    <section class="grid h-full grid-cols-[1fr_minmax(auto,70rem)_1fr]">
       <div></div>
       {% comment %} add our two columns for the sidebar and profile {% endcomment %}
       {% comment %} <section class="column-wrapper border grid grid-cols-[1fr_2fr]"> {% endcomment %}
-      <section class="column-wrapper  grid grid-cols-1 lg:grid-cols-3">
+      <section class="column-wrapper h-full  grid grid-cols-1 lg:grid-cols-3">
         {% comment %} list the active tags
         {% endcomment %}
         {% comment %}
           We only want to hide the list of profiles when there is NO filtered search
           and when a user is not selected.
         {% endcomment %}
-        <div class="sidebar p-3 transition-all border border-white {% if hide_profile_list %}hidden{% endif %} lg:inline"
-             style="height: 75vh">{% include "pages/_paginated_profiles.html" %}</div>
+        <div class="sidebar order-2 lg:order-1  p-3 transition-all border border-white {% if hide_profile_list %}hidden{% endif %} lg:inline"
+             style="height: 100%">{% include "pages/_paginated_profiles.html" %}</div>
         <div id="profile-slot"
-             class="card bg-transparent lg:col-span-2 border border-white	 rounded-none {% if not hide_profile_list %}{% endif %} lg:inline">
+             class="card order-1 lg:order-2 bg-transparent lg:col-span-2 border border-white	 rounded-none {% if not hide_profile_list %}{% endif %} lg:inline">
              {% if profile %}
             {% comment %} show the profile with all the tags, and details {% endcomment %}
             {% include '_profile.html' %}

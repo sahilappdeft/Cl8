@@ -27,21 +27,21 @@
   <div></div>
   <div class="">
     <div class="">
-      <div class="flex justify-between items-center">
-        <div class="justify-self-start justify-align-center">
-          <a class="btn btn-ghost normal-case text-xl max-w-xs mx-3 lg:mr-3 p-0" href="/">
+      <div class="flex md:justify-between items-center gap-5 p-2 lg:px-0 lg:py-2">
+        <div class=" flex justify-center lg:justify-self-start items-center">
+          <a class="btn btn-ghost normal-case text-xl max-w-xs mx-4 lg:ml-0 lg:mr-4 p-0" href="/">
             {% if request.constellation.logo %}
-              <img src="{{ request.constellation.logo.url }}" class="w-[255px] lg:w-[65px]"  />
+              <img src="{{ request.constellation.logo.url }}" class="w-[47px] lg:w-[47px]"  />
             {% else %}
               <span class="site-name text-white ml-4">{{ request.site.name }}</span>
             {% endif %}
           </a>
         </div>
-        <section class="search-component grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+        <section class="search-component grid grid-cols-[1fr_minmax(auto,15rem)_1fr] md:grid-cols-[1fr_minmax(auto,30rem)_1fr] lg:grid-cols-[1fr_minmax(auto,45rem)_1fr]">
           <div></div>
           <section>
             <div class="card search-block ">
-              <div class="card-body px-0 py-3">
+              <div class="card-body px-0 py-0">
                 <form id="filter-form"
                       method="get"
                       hx-get="/"
@@ -68,7 +68,7 @@
           <div></div>
           {% comment %} close search component {% endcomment %}
         </section>
-        <div class="justify-self-end">
+        <div class="justify-self-end ml-[2rem] md:ml-0 w-[5rem] lg:w-auto">
           <ul class="menu menu-horizontal px-1">
             {% if request.user.is_authenticated %}
               <li tabindex="0">
