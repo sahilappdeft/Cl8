@@ -6,7 +6,7 @@
 {% endblock %}
 {% block inner %}
 <div class="flex items-center justify-center login-container" style="height: 80vh;">
-  <div class="bg-white-100 mt-4 p-6 w-96	login-card">
+  <div class="bg-white-100 mt-4 p-6 w-[20rem] md:w-[25rem]	login-card">
     <h1 class="text-2xl">{% trans "Sign in" %}</h1>
     {% get_providers as socialaccount_providers %}
     {% if request.constellation.signin_via_slack %}
