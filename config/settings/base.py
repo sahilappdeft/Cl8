@@ -89,6 +89,7 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
+    "cl8.users.apps.UsersConfig",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -110,7 +111,6 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "cl8.users.apps.UsersConfig",
     "cl8.apps.AdminConfig",
     # slack auth scheme changed so we need our own version now
     "cl8.users.slack_openid_connect",

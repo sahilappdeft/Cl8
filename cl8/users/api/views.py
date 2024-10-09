@@ -563,18 +563,17 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     """
     
     def send_mail(self, template_prefix, email, context):
-
         users = filter_users_by_email(email)
         user = users[0] if users else None
         context['user'] = user
-        
+
         # Check if the user exists
         if user:
             context['password_reset_url'] = self.get_password_reset_url(context)
             # User exists, get their profile
             context['profile'] = Profile.objects.get(user=user)
             email_content = self.get_email_content(context)
-            
+
             # Send the email to the user
             send_mail(
                 f"Welcome to {context['constellation']}",
@@ -584,8 +583,32 @@ class CustomAccountAdapter(DefaultAccountAdapter):
                 html_message=email_content,
             )
         else:
-            # raise ValueError("Invalid email address. No account associated with this email.")
-            pass
+            # User does not exist, send default email
+            self.send_default_email(email)
+
+    def send_default_email(self, email):
+        current_site = get_current_site(self.request)
+        subject = "Hello from Constellate!"
+        message = f"""
+        You are receiving this email because you, or someone else, tried to access an account with email {email}. 
+        However, we do not have any record of such an account in our database.
+        
+        This mail can be safely ignored if you did not initiate this action.
+        
+        If it was you, you can sign up for an account using the link below.
+        
+        https://{current_site.domain}/accounts/signup/
+        
+        Thank you for using Constellate!
+        """
+        
+        # Send the default email
+        send_mail(
+            subject,
+            message,
+            None,
+            [email],
+        )
 
     def get_email_content(self, context):
         current_site = get_current_site(self.request)
