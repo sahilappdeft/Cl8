@@ -35,12 +35,12 @@
             {{ form.non_field_errors }}
         </div>
         {% endif %}
-        <div class="lg:grid lg:grid-cols-3">
-            <div class="w-full lg:w-auto sidebar text-center p-3 transition-all border border-white lg:inline  ">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_minmax(auto,70rem)_1fr] gap-4 lg:gap-0">
+            <div class="sidebar text-center p-3 transition-all w-full lg:w-auto border border-white lg:inline">
                 {% if form.instance.photo %}
-                <img id="photoPreview" class="w-48 h-48 m-auto block rounded-full object-cover" src="{{ form.instance.photo.url }}" />
+                <img id="photoPreview" class="w-36 h-36 md:w-48 md:h-48 m-auto block rounded-full object-cover" src="{{ form.instance.photo.url }}" />
                 {% else %}
-                <img id="photoPreview" class="w-48 h-48 m-auto block rounded-full object-cover"
+                <img id="photoPreview" class="w-36 h-36 md:w-48 md:h-48 m-auto block rounded-full object-cover"
                     src="{% static 'img/placeholder-person-square.png' %}" />
                 {% endif %}
                 {% comment %} {{ form.photo }} {% endcomment %}
@@ -51,9 +51,9 @@
                 <!-- Hidden input to store the true/false value -->
                 <input type="hidden" id="visibilityStatus" name="visible" value="false">
 
-                <button class="btn w-48	 rounded-full primary-btn mt-4 mb-4" id="btnImportData" type="button" >Choose file</button>
-                <button class="btn w-48 profile-invisible-btn rounded-full mb-2" type="button" id="visibilityToggleBtn">
-                    Profile invisible
+                <button class="btn w-full md:w-48 rounded-full primary-btn mt-4 mb-4" id="btnImportData" type="button" >Choose file</button>
+                <button class="btn w-full md:w-48 {% if form.instance.visible %}profile-visible-btn{% else %}profile-invisible-btn{% endif %} rounded-full mb-2" type="button" id="visibilityToggleBtn">
+                    {% if form.instance.visible %}Profile visible{% else %}Profile invisible{% endif %}
                 </button>                <!-- <p class="text-sm my-4">{{ form.photo }}</p>
                 <p class="my-4 w-2/3 p-2 rounded-md {% if form.instance.visible %} bg-red-400 {% else %} bg-green-300 {% endif %}">
                     {% render_field form.visible class="checkbox" %}
@@ -62,12 +62,12 @@
                 </p> -->
                 <p class="text-sm  px-3 m-auto">When 'visible' is checked, your profile will show up in searches</p>
             </div>
-            <div class=" col-span-2  p-4 transition-all border border-white lg:inline">
-                <div class="block lg:flex justify-between mb-4">
-                    <button class="mt-3 btn primary-btn rounded-full">Save changes</button>
-                    {% comment %} <a class="mt-3 btn bg-[#ff4d11] border-[#ff4d11] hover:bg-[#ff4d11] rounded-full" 
+            <div class="col-span-2 p-4 transition-all border border-white">
+                <div class="flex flex-col md:flex-row justify-between mb-4 space-y-3 md:space-y-0">
+                    <button class="btn primary-btn rounded-full w-full md:w-auto">Save changes</button>
+                    {% comment %} <a class="btn bg-[#ff4d11] border-[#ff4d11] hover:bg-[#ff4d11] rounded-full w-full md:w-auto" 
                     href="{% url 'account_reset_password' %}">Email password reset</a> {% endcomment %}
-                    <a class="mt-3 btn secondary-btn rounded-full" href="{% url 'home' %}">Cancel</a>
+                    <a class="btn secondary-btn rounded-full w-full md:w-auto" href="{% url 'home' %}">Cancel</a>
                 </div>
                 <div class="form-control w-full mb-4">
                     <!-- <label class="label" for="{{ form.name.id_for_label }}">
@@ -148,7 +148,7 @@
                         <span class="label-text">{{ form.bio.label }}</span>
                     </label> -->
                     <span class="label-text text-red-500 px-1">{{ form.bio.errors }}</span>
-                    {% render_field form.bio class="textarea textarea-bordered w-full" placeholder="Bio" rows="5" cols="40" %}
+                    {% render_field form.bio class="textarea textarea-bordered empty-field myInput w-full" placeholder="Bio" rows="5" cols="40" %}
                 </div>
                 <div class="form-control mb-4 w-full">
                     <label class="label">
@@ -156,9 +156,9 @@
                     </label>
                     {% render_field form.tags class="w-full mt-4" %}
                 </div>
-                <div class="flex justify-between mt-4">
-                    <button class="mt-3 btn primary-btn rounded-full">Save changes</button>
-                    <a class="mt-3 btn secondary-btn rounded-full" href="{% url 'home' %}">Cancel</a>
+                <div class="flex flex-col md:flex-row justify-between mt-4 space-y-3 md:space-y-0">
+                    <button class="btn primary-btn rounded-full w-full md:w-auto">Save changes</button>
+                    <a class="btn secondary-btn rounded-full w-full md:w-auto" href="{% url 'home' %}">Cancel</a>
                 </div>
             </div>
         </div>

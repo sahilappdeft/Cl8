@@ -28,6 +28,7 @@
   <div class="">
     <div class="">
       <div class="flex md:justify-between items-center gap-3 md:gap-5 p-2 lg:px-0 lg:py-2">
+        <div class="flex ">
         <div class=" flex justify-center lg:justify-self-start items-center">
           <a class="btn btn-ghost normal-case text-xl max-w-xs mx-4 lg:ml-0 lg:mr-4 p-0" href="/">
             {% if request.constellation.logo %}
@@ -68,6 +69,7 @@
           <div></div>
           {% comment %} close search component {% endcomment %}
         </section>
+      </div>
         <div class="justify-self-end ">
           <ul class="menu menu-horizontal px-1">
             {% if request.user.is_authenticated %}
