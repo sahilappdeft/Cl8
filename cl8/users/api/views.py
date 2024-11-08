@@ -647,3 +647,5 @@ class CustomAccountAdapter(DefaultAccountAdapter):
 
     def get_password_reset_url(self, context):
         return context['password_reset_url']
+    
+#
