@@ -649,3 +649,4 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         return context['password_reset_url']
     
 #
+###2
