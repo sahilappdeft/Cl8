@@ -1,6 +1,7 @@
 from dal import autocomplete
 from django import forms
 from django.contrib.auth import forms as auth_forms
+from django.core.validators import URLValidator
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
@@ -47,6 +48,22 @@ class ProfileUpdateForm(forms.ModelForm):
         widget=autocomplete.ModelSelect2Multiple(url="tag-autocomplete-with-create"),
         required=False,
     )
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        url_validator = URLValidator()
+        social_fields = ["website", "social_1", "social_2", "social_3"]
+
+        # Loop through the social fields and validate each one
+        for field in social_fields:
+            social_link = cleaned_data.get(field)
+            if social_link:  # Only validate if the field is not empty
+                try:
+                    url_validator(social_link)
+                except ValidationError:
+                    self.add_error(field, "Please enter a valid URL for this social link.")
+
+        return cleaned_data
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -74,13 +91,14 @@ class ProfileUpdateForm(forms.ModelForm):
             "email",
             "name",
             "phone",
+            "website",
             "location",
             "organisation",
             "bio",
             "tags",
-            "twitter",
-            "linkedin",
-            "facebook",
+            "social_1",
+            "social_2",
+            "social_3",
             "visible",
         ]
 
@@ -91,8 +109,25 @@ class ProfileCreateForm(forms.ModelForm):
 
     tags = ModelMultipleChoiceField(
         queryset=taggit_models.Tag.objects.all(),
+        required=False,  # Set required to False
         widget=autocomplete.ModelSelect2Multiple(url="tag-autocomplete-with-create"),
     )
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        url_validator = URLValidator()
+        social_fields = ["website", "social_1", "social_2", "social_3"]
+
+        # Loop through the social fields and validate each one
+        for field in social_fields:
+            social_link = cleaned_data.get(field)
+            if social_link:  # Only validate if the field is not empty
+                try:
+                    url_validator(social_link)
+                except ValidationError:
+                    self.add_error(field, "Please enter a valid URL for this social link.")
+
+        return cleaned_data
 
     def save(self, commit=True):
         """
@@ -105,14 +140,14 @@ class ProfileCreateForm(forms.ModelForm):
         )
         user.username = safe_username()
         user.name = self.cleaned_data.get("name")
-        user.save()
-        profile = Profile.objects.create(user=user)
+        user.save(), 
+        profile, profile_create = Profile.objects.get_or_create(user=user)
 
         profile.phone = self.cleaned_data.get("phone")
         profile.website = self.cleaned_data.get("website")
-        profile.twitter = self.cleaned_data.get("twitter")
-        profile.facebook = self.cleaned_data.get("facebook")
-        profile.linkedin = self.cleaned_data.get("linkedin")
+        profile.social_1 = self.cleaned_data.get("social_1")
+        profile.social_2 = self.cleaned_data.get("social_2")
+        profile.social_3 = self.cleaned_data.get("social_3")
         profile.bio = self.cleaned_data.get("bio")
         profile.visible = self.cleaned_data.get("visible")
         profile.short_id = safe_username()
@@ -139,12 +174,13 @@ class ProfileCreateForm(forms.ModelForm):
             "name",
             "email",
             "location",
+            "website",
             "organisation",
             "bio",
             "phone",
             "tags",
-            "twitter",
-            "linkedin",
-            "facebook",
+            "social_1",
+            "social_2",
+            "social_3",
             "visible",
         ]

@@ -7,7 +7,7 @@ import environ
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 PROJECT_DIR = ROOT_DIR
-APPS_DIR = ROOT_DIR / "cl8"
+APPS_DIR = ROOT_DIR / "cl8"  
 env = environ.Env()
 
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
@@ -15,7 +15,6 @@ if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(ROOT_DIR / ".env"))
 
-# GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool("DJANGO_DEBUG", False)
@@ -90,6 +89,7 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
+    "cl8.users.apps.UsersConfig",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -111,7 +111,6 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "cl8.users.apps.UsersConfig",
     "cl8.apps.AdminConfig",
     # slack auth scheme changed so we need our own version now
     "cl8.users.slack_openid_connect",
@@ -193,7 +192,8 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
-    "cl8.users.middleware.ConstellationMiddleware",
+    # "cl8.users.middleware.ConstellationMiddleware",
+    "cl8.users.middleware.SiteConfigMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
@@ -280,9 +280,11 @@ X_FRAME_OPTIONS = "DENY"
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
-)
+# EMAIL_BACKEND = env(
+#     "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+# )
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
@@ -400,3 +402,6 @@ AIRTABLE_BASE = env.str("DJANGO_AIRTABLE_BASE", default=None)
 AIRTABLE_TABLE = env.str("DJANGO_AIRTABLE_TABLE", default=None)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+
+ACCOUNT_ADAPTER = 'cl8.users.api.views.CustomAccountAdapter'
